@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="row m-t-2 clearfix">
+    <div class="col-lg-6 col-lg-offset-3">
+    {% for post in posts %}
+        <div class="media">
+            <div class="media-body">
+                <h5 class="medis-heading">
+                    <a href="/post/{{ post.id }}">
+                        <span class="article-row-title">{{ post.title }}</span>
+                    </a>
+                    <span class="label label-info">{{ post.tags }}</span>
+                </h5>
+
+                <p class="article-row-author">Created at {{ post.time }}</p>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+</div>
+<div class="col-md-4 col-md-offset-4 m-b-2">
+    <ul class="pager">
+        <li class="pager-prev disabled"><a href="javascript:;">Previous</a></li>
+        <li class="pager-next"><a href="javascript:;">Next</a></li>
+    </ul>
+</div>
+{% endblock %}

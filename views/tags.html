@@ -1,0 +1,10 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h2>博客标签</h2>
+
+{% for tag in tagsAll %}
+<a href="#" class="label label-info">{{ tag.name }}({{ tag.length }})</a>
+{% endfor %}
+
+{% endblock %}

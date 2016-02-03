@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="col-md-8 col-md-offset-2">
+    <h3 class=" m-t-2">{{post.title}}</h3>
+    <hr/>
+    <p>
+        <span class="p-r-1">{{post.time}}</span>
+        <span class="m-r-1 label label-info">{{ post.tags }}</span>
+    </p>
+    <div>
+        {{post.content}}
+    </div>
+</div>
+{% endblock%}
