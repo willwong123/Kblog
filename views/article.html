@@ -6,7 +6,9 @@
     <hr/>
     <p>
         <span class="p-r-1">{{post.time}}</span>
-        <span class="m-r-1 label label-info">{{ post.tags }}</span>
+        {% for i,v in post.tags %}
+        <span class="label label-info">{{ post.tags[i] }}</span>
+        {% endfor %}
     </p>
     <div>
         {{post.content}}

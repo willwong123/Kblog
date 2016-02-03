@@ -1,21 +1,27 @@
-/**
- * Created by 14050185 on 2016/1/26.
- */
 var Koa = require("koa");
-var route = require("koa-route");
+var Router = require("koa-router");
 var logger = require('koa-logger');
-var parse = require('co-body');
-var render = require('./libs/render');
+var path = require("path");
+var staticServer = require("koa-static");
+var database = require("./db/db");
+
+var route = new Router;
+
 var app = new Koa();
 
-app.use(logger())
+// 日志
+app.use(logger());
 
-var routes = require("./routes");
-app.use(route.get("/", routes.index));
-app.use(route.get("/tags", routes.tags));
-app.use(route.get("/post/new", routes.addNew));
-app.use(route.get("/post/:id", routes.detail));
-app.use(route.post("/post", routes.add));
+// 生成路由
+var routesAll = require("./routes");
+routesAll(route);
 
+// 静态资源服务，并启用缓存
+app.use(staticServer(path.join(__dirname, "/public"), {maxage: 86400000}));
+// 启用路由
+app.use(route.routes());
+app.use(route.allowedMethods());
+
+// 启动服务
 app.listen(3000);
 console.log('listening on port 3000');
