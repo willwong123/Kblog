@@ -10,6 +10,9 @@
         <h1 class="text-center">Blog</h1>
         <p class="lead">This is a simple hero unit, extra attention to featured content or information.</p>
     </div>
+
+    {% block nav %}
+
     <div class="container text-xs-center">
         <!--include classifications-->
         <div class="col-lg-1 col-lg-offset-4 col-md-2 col-md-offset-2 col-sm-3">
@@ -26,9 +29,10 @@
         <div class="col-lg-1 col-md-2 col-sm-3">
             <a href="/post/new"><h4 class="text-center">Add</h4></a>
         </div>
-
         <!--end-->
     </div>
+
+    {% endblock %}
 
     <div class="container">
         {% block content %}

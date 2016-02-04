@@ -1,4 +1,4 @@
-var Blog = require("./controller/blog");
+var Blog = require("./../controller/blog");
 
 module.exports = function (route) {
     route.get("/", Blog.index);

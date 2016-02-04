@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+<form method="post" action="/register" class="col-md-8 col-md-offset-2">
+    <div class="form-group row">
+        <label for="Username" class="col-sm-3 form-control-label">Username</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" name="username" id="Username" placeholder="Username">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="Password" class="col-sm-3 form-control-label">Password</label>
+        <div class="col-sm-9">
+            <input type="password" class="form-control" name="password" id="Password" placeholder="Password">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="Password2" class="col-sm-3 form-control-label">Password Again</label>
+        <div class="col-sm-9">
+            <input type="password" class="form-control" id="Password2" placeholder="Password Again">
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-offset-3 col-sm-9">
+            <button type="submit" class="btn btn-info">Sign up</button>
+            <a href="/login" class="btn btn-link">Already has account? Sign in</a>
+        </div>
+    </div>
+</form>
+{% endblock %}
