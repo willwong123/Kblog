@@ -1,6 +1,8 @@
 module.exports = {
     // 首页文章展示条数
     indexLimit: 5,
+    // 后台列表每页条数
+    backLimit: 10,
     // 首页文章摘要长度
     shortDesc: 30,
     // 数据库地址

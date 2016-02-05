@@ -77,9 +77,19 @@ module.exports.detail = function* () {
  * 后台文章管理页面
  * */
 module.exports.manage = function* () {
-    var posts = yield Blog.find({}).sort({time: -1});
+    // 当前展示页的页码
+    var cur = parseInt(this.query.p || 1, 10);
+
+    var postsCount = yield Blog.find({}).count();
+    var posts = yield Blog.find({})
+        .sort({time: -1})
+        .skip((cur - 1) * config.backLimit)
+        .limit(config.backLimit);
+
+    var page = Math.ceil(postsCount / config.backLimit);
+
     var user = this.session.user.username;
-    this.body = yield render("bePages/index", {list: posts, user: user})
+    this.body = yield render("bePages/index", {list: posts, user: user, page: page})
 };
 
 /*
