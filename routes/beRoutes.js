@@ -19,4 +19,5 @@ module.exports = function (route) {
     route.get("/preview/post/:postId", Auth(), Blog.detail);
     // и╬ЁЩндуб
     route.post("/login/remove/:postId", Auth(), Blog.remove);
+    route.post("/login/remove/group", Auth(), Blog.removeGroup);
 };

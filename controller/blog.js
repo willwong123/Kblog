@@ -183,3 +183,19 @@ module.exports.remove = function* () {
     });
     this.redirect("/login/posts");
 };
+
+/*
+ * 后台批量删除文章
+ * */
+module.exports.removeGroup = function* () {
+    var reqBody = yield parse(this);
+    var idArr = reqBody.id;
+    yield Blog.remove({id: {$in: idArr}},function(err) {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        console.log("删除批量数据成功!");
+    });
+    this.redirect("/login/posts");
+};

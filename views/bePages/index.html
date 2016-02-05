@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <button class="btn btn-danger m-b-1">批量删除</button>
+    <button class="btn btn-danger m-b-1 js-group-del">批量删除</button>
     <table class="table table-bordered table-striped">
         <colgroup>
             <col width="10%"/>
@@ -23,7 +23,7 @@
         <tbody>
         {% for item in list %}
         <tr>
-            <td><input type="checkbox" name="checkItem"/></td>
+            <td><input type="checkbox" name="checkItem" id="{{item.id}}"/></td>
             <td><a target="_blank" href="/preview/post/{{ item.id }}">{{ item.title }}</a></td>
             <td>{{ item.time }}</td>
             <td>{{ item.tags }}</td>
@@ -58,10 +58,32 @@
 
 {% block script %}
 <script>
-    $("body").on("click", ".js-item-del", function () {
+    var idArr = [];
+    $("body").on("click", "[name='checkItem']", function (e) {
+        var id = $(this).attr("id");
+        if ($(this).prop("checked")) {
+            idArr.push(id);
+        } else {
+            idArr.forEach(function (v,i) {
+                if (v === id) {
+                    idArr.splice(i,1);
+                    return;
+                }
+            })
+        }
+        var _c = $("input[name=checkItem]"),
+        _n = _c.filter(':checked').length;
+        $("input[name=checkAll]").prop('checked',_c.length == _n);
+        e.stopPropagation();
+    }).on("click","[name='checkAll']",function(){
+        if ($(this).prop('checked')) {
+            $("input[name=checkItem]").prop('checked',true);
+        } else {
+            $("input[name=checkItem]").prop('checked',false);
+        }
+    }).on("click", ".js-item-del", function () {
         var $this = $(this);
-        var agree = confirm("确定要删除该博文吗？");
-        if (agree) {
+        if (confirm("确定要删除该博文吗？")) {
             $.ajax({
                 url: "/login/remove/" + $this.data("id"),
                 type: "POST",
@@ -73,7 +95,21 @@
                 }
             })
         }
-    })
+    }).on("click", ".js-group-del", function () {
+        if (confirm("确定要批量删除选择的博文吗？")) {
+            $.ajax({
+                type: "POST",
+                url: "/login/remove/group",
+                data: {id: idArr},
+                success: function () {
+                    $("[name=checkItem]:checked").parents("tr").remove()
+                },
+                error: function () {
+                    alert("删除失败，请重试！")
+                }
+            })
+        }
+    });
 
     var pageNum = {{page}};
     var pageHTML = '';
