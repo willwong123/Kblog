@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>blog</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="jumbotron text-xs-center">
+        <h1 class="text-center"><a href="/">Blog</a></h1>
+        <p class="lead">This is a simple hero unit, extra attention to featured content or information.</p>
+    </div>
+
+    {% block nav %}
+
+    <!--<div class="container text-xs-center">-->
+        <!--&lt;!&ndash;include classifications&ndash;&gt;-->
+        <!--<div class="col-lg-1 col-lg-offset-4 col-md-2 col-md-offset-2 col-sm-3">-->
+            <!--<a href="/"><h4 class="text-center">Posts</h4></a>-->
+        <!--</div>-->
+        <!--<div class="col-lg-1 col-md-2 col-sm-3">-->
+            <!--&lt;!&ndash;<a href="/users"><h4 class="text-center">Users</h4></a>&ndash;&gt;-->
+            <!--<a href="/"><h4 class="text-center">Users</h4></a>-->
+        <!--</div>-->
+        <!--<div class="col-lg-1 col-md-2 col-sm-3">-->
+            <!--&lt;!&ndash;<a href="/tags"><h4 class="text-center">Tags</h4></a>&ndash;&gt;-->
+            <!--<a href="/"><h4 class="text-center">Tags</h4></a>-->
+        <!--</div>-->
+        <!--<div class="col-lg-1 col-md-2 col-sm-3">-->
+            <!--<a href="/post/new"><h4 class="text-center">Add</h4></a>-->
+        <!--</div>-->
+        <!--&lt;!&ndash;end&ndash;&gt;-->
+    <!--</div>-->
+
+    {% endblock %}
+
+    <div class="container">
+        {% block content %}
+        <div class="loading">loading...</div>
+        {% endblock %}
+    </div>
+
+{% block script %}
+
+{% endblock %}
+</body>
+</html>

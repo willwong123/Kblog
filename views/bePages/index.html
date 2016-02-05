@@ -1,0 +1,81 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<div class="container">
+    <button class="btn btn-danger m-b-1">批量删除</button>
+    <table class="table table-bordered table-striped">
+        <colgroup>
+            <col width="10%"/>
+            <col width="45%"/>
+            <col width="15%"/>
+            <col width="15%"/>
+            <col width="15%"/>
+        </colgroup>
+        <thead>
+        <tr>
+            <th><label class="m-b-0"><input type="checkbox" name="checkAll"/> 全选</label></th>
+            <th>标题</th>
+            <th>创建时间</th>
+            <th>标签</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in list %}
+        <tr>
+            <td><input type="checkbox" name="checkItem"/></td>
+            <td><a target="_blank" href="/preview/post/{{ item.id }}">{{ item.title }}</a></td>
+            <td>{{ item.time }}</td>
+            <td>{{ item.tags }}</td>
+            <td>
+                <a class="js-item-del" href="javascript:;" data-id="{{ item.id }}">删除</a>
+                <a href="/login/edit/{{ item.id }}">修改</a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <nav>
+        <ul class="pagination pull-xs-right">
+            <li class="page-item">
+                <a href="#" class="page-link" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                </a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">4</a></li>
+            <li class="page-item"><a class="page-link" href="#">5</a></li>
+            <li class="page-item">
+                <a href="#" aria-label="Next" class="page-link">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<script src="/js/jquery.min.js"></script>
+<script>
+    $("body").on("click", ".js-item-del", function () {
+        var $this = $(this);
+        var agree = confirm("确定要删除该博文吗？");
+        if (agree) {
+            $.ajax({
+                url: "/login/remove/" + $this.data("id"),
+                type: "POST",
+                success: function () {
+                    $this.parents("tr").remove()
+                },
+                error: function () {
+                    alert("删除失败，请重试！")
+                }
+            })
+        }
+    })
+</script>
+{% endblock %}

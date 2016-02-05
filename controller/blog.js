@@ -1,6 +1,7 @@
 var mongoose = require("mongoose");
 var parse = require("co-body");
 var uuid = require("node-uuid");
+var markdown = require("markdown").markdown;
 
 // 加载配置文件
 var config = require("../config");
@@ -29,7 +30,7 @@ module.exports.index = function* () {
     var next = cur * config.indexLimit >= count ? 0 : cur + 1;
 
     // 渲染页面
-    this.body = yield render('content', {
+    this.body = yield render('fePages/content', {
         posts: indexList,
         page: {
             prov: prov,
@@ -45,7 +46,7 @@ module.exports.index = function* () {
 * */
 module.exports.tags = function* () {
     var tagsAll = yield Blog.distinct("tags");
-    this.body = yield render("tags", {tags: tagsAll})
+    this.body = yield render("fePages/tags", {tags: tagsAll})
 };
 
 /*
@@ -60,12 +61,12 @@ module.exports.detail = function* () {
 
     if (!post) {
         // 404
-        this.body = yield render('404', {});
+        this.body = yield render('fePages/404', {});
         return;
     }
 
     // 渲染文章详情页
-    this.body = yield render('article', {post: post})
+    this.body = yield render('fePages/article', {post: post})
 };
 
 /*
@@ -84,6 +85,13 @@ module.exports.save = function* () {
     var minute = fullTime.getMinutes() < 10 ? '0' + fullTime.getMinutes() : fullTime.getMinutes();
     var second = fullTime.getSeconds() < 10 ? '0' + fullTime.getSeconds() : fullTime.getSeconds();
 
+    // 转义特殊字符函数
+    function html2Escape(sHtml) {
+        return sHtml.replace(/[<>&"]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];});
+    }
+    // markdown化正文
+    post.content = html2Escape(post.content);
+
     // 设置新增文章标签
     post.tags = post.tags.split(',');
 
@@ -99,12 +107,47 @@ module.exports.save = function* () {
     // 保存至数据库
     blog.save();
 
-    this.redirect("/");
+    this.redirect("/login/posts");
 };
 
 /*
  * 新增文章
  * */
 module.exports.addNew = function* () {
-    this.body = yield render("add", {})
+    this.body = yield render("bePages/add", {})
+};
+
+/*
+* 修改文章
+* */
+module.exports.edit = function* () {
+    var id = this.params['postId'];
+    var post = yield Blog.findOne({id: id});
+    console.log(post)
+    this.body = yield render("bePages/add", {post: post});
+};
+
+/*
+* 删除文章
+* */
+module.exports.remove = function* () {
+    var id = this.params['postId'];
+    yield Blog.remove({id: id},function(err) {
+        if (err) {
+            console.log(err);
+            return;
+        }
+    });
+    this.redirect("/login/posts");
+}
+
+/*
+ * 文章管理页面
+ * */
+module.exports.manage = function* () {
+
+    var posts = yield Blog.find({}).sort({time: -1});
+    var user = this.session.user.username;
+
+    this.body = yield render("bePages/index", {list: posts, user: user})
 };

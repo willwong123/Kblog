@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>blog</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    {% block head %}
+    <nav class="navbar navbar-dark bg-primary m-b-3">
+        <a class="navbar-brand" href="/login/posts">Kblog博客管理系统</a>
+        {% if user %}
+        <div class="pull-xs-right">
+            <div class="dropdown pull-right">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{ user }}
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <a class="dropdown-item" href="/logout">注销</a>
+                </div>
+            </div>
+        </div>
+        <a href="/login/post/new" class="btn btn-secondary pull-xs-right m-r-1">写博客</a>
+        {% endif %}
+    </nav>
+    {% endblock %}
+
+    <div class="container">
+        {% block content %}
+        <div class="loading">loading...</div>
+        {% endblock %}
+    </div>
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script>
+        $('.dropdown-toggle').dropdown()
+    </script>
+</body>
+</html>

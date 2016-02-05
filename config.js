@@ -13,5 +13,4 @@ module.exports = {
     staticAge: 1000 * 60 * 60 * 24,
     // cookieÇ©Ãû
     keys: ["wow"]
-
 };

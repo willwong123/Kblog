@@ -14,7 +14,15 @@ var auth = require("../libs/auth");
  * 用户登录页面
  * */
 module.exports.login = function* () {
-    this.body = yield render("login", {})
+    this.body = yield render("bePages/login", {})
+};
+
+/*
+ * 用户注销页面
+ * */
+module.exports.logout = function* () {
+    this.session = null;
+    this.body = yield render("bePages/login", {})
 };
 
 /*
@@ -48,22 +56,15 @@ module.exports.saveLogin = function* () {
     this.session.maxAge = config.sessionAge;
 
     // 登录成功，跳转至后台首页
-    this.redirect("/login/index");
+    this.redirect("/login/posts");
 
-};
-
-/*
-* 登录成功页面
-* */
-module.exports.loginSuccess = function* () {
-    this.body = yield render("index", {})
 };
 
 /*
 * 注册用户
 * */
 module.exports.register = function* () {
-    this.body = yield render("register", {})
+    this.body = yield render("bePages/register", {})
 };
 
 /*
@@ -84,5 +85,5 @@ module.exports.saveAdd = function* () {
         self.session.user = user;
     });
 
-    this.redirect("/login");
+    this.redirect("login");
 };
