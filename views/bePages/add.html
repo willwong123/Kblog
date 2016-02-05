@@ -2,7 +2,11 @@
 
 {% block content %}
 <h2>添加博客</h2>
+{% if edit %}
+<form action="/login/edit/{{ post.id }}" method="post">
+{% else %}
 <form action="/login/post" method="post">
+{% endif %}
     <fieldset class="form-group">
         <label for="blogHead">博客标题</label>
         <input type="text" name="title" class="form-control" id="blogHead" placeholder="请输入标题" value="{{ post.title }}">

@@ -6,11 +6,13 @@ var markdown = require("markdown").markdown;
 // 加载配置文件
 var config = require("../config");
 
-var render = require("../libs/render");
 var Blog = require("../model/blog");
 
+var render = require("../libs/render");
+var date = require("../libs/date");
+
 /*
- * 获取文章列表
+ * 前台文章列表
  * */
 module.exports.index = function* () {
     // 确定当前页面
@@ -50,7 +52,7 @@ module.exports.tags = function* () {
 };
 
 /*
- * 获取文章详情
+ * 前台展示文章详情
  * */
 module.exports.detail = function* () {
     // 获取文章详情参数
@@ -58,6 +60,8 @@ module.exports.detail = function* () {
 
     // 查询文章内容
     var post = yield Blog.findOne({id: id});
+
+    post.content = markdown.toHTML(post.content);
 
     if (!post) {
         // 404
@@ -70,33 +74,33 @@ module.exports.detail = function* () {
 };
 
 /*
- * 保存新增文章
+ * 后台文章管理页面
+ * */
+module.exports.manage = function* () {
+    var posts = yield Blog.find({}).sort({time: -1});
+    var user = this.session.user.username;
+    this.body = yield render("bePages/index", {list: posts, user: user})
+};
+
+/*
+ * 后台新增文章
+ * */
+module.exports.addNew = function* () {
+    this.body = yield render("bePages/add", {post: {}, edit: false})
+};
+
+/*
+ * 后台保存新增文章
  * */
 module.exports.save = function* () {
     // 解析传入的参数
     var post = yield parse(this);
 
-    // 获取并格式化当前时间
-    var fullTime = new Date();
-    var year = fullTime.getFullYear();
-    var month = fullTime.getMonth() < 9 ? '0' + (parseInt(fullTime.getMonth()) + 1) : parseInt(fullTime.getMonth()) + 1;
-    var day = fullTime.getDay() < 10 ? '0' + fullTime.getDay() : fullTime.getDay();
-    var hour = fullTime.getHours() < 10 ? "0" + fullTime.getHours() : fullTime.getHours();
-    var minute = fullTime.getMinutes() < 10 ? '0' + fullTime.getMinutes() : fullTime.getMinutes();
-    var second = fullTime.getSeconds() < 10 ? '0' + fullTime.getSeconds() : fullTime.getSeconds();
-
-    // 转义特殊字符函数
-    function html2Escape(sHtml) {
-        return sHtml.replace(/[<>&"]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];});
-    }
-    // markdown化正文
-    post.content = html2Escape(post.content);
-
     // 设置新增文章标签
     post.tags = post.tags.split(',');
 
     // 设置新增文章时间
-    post.time = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
+    post.time = date();
 
     // 设置新增文章id
     post.id = uuid.v4();
@@ -105,30 +109,58 @@ module.exports.save = function* () {
     var blog = new Blog(post);
 
     // 保存至数据库
-    blog.save();
+    blog.save(function(err) {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        console.log("新数据保存成功！")
+    });
 
     this.redirect("/login/posts");
 };
 
 /*
- * 新增文章
- * */
-module.exports.addNew = function* () {
-    this.body = yield render("bePages/add", {})
-};
-
-/*
-* 修改文章
+* 后台修改文章
 * */
 module.exports.edit = function* () {
     var id = this.params['postId'];
     var post = yield Blog.findOne({id: id});
-    console.log(post)
-    this.body = yield render("bePages/add", {post: post});
+    this.body = yield render("bePages/add", {post: post, edit: true});
 };
 
 /*
-* 删除文章
+* 后台保存修改
+* */
+module.exports.saveEdit = function* () {
+    var id = this.params["postId"];
+    // 解析传入的参数
+    var post = yield parse(this);
+
+    // 设置新增文章标签
+    post.tags = post.tags.split(',');
+
+    // 更新实例
+    Blog.update({id: id},
+        {$set:
+            {   tags: post.tags,
+                content: post.content,
+                time: date(),
+                title: post.title
+            }
+        }, {}, function(err) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            console.log("数据更新成功！")
+        });
+
+    this.redirect("/login/posts");
+};
+
+/*
+* 后台删除文章
 * */
 module.exports.remove = function* () {
     var id = this.params['postId'];
@@ -137,17 +169,7 @@ module.exports.remove = function* () {
             console.log(err);
             return;
         }
+        console.log("删除单条数据成功!");
     });
     this.redirect("/login/posts");
-}
-
-/*
- * 文章管理页面
- * */
-module.exports.manage = function* () {
-
-    var posts = yield Blog.find({}).sort({time: -1});
-    var user = this.session.user.username;
-
-    this.body = yield render("bePages/index", {list: posts, user: user})
 };

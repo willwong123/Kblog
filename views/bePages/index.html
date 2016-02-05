@@ -2,7 +2,6 @@
 
 {% block content %}
 
-<div class="container">
     <button class="btn btn-danger m-b-1">批量删除</button>
     <table class="table table-bordered table-striped">
         <colgroup>
@@ -16,7 +15,7 @@
         <tr>
             <th><label class="m-b-0"><input type="checkbox" name="checkAll"/> 全选</label></th>
             <th>标题</th>
-            <th>创建时间</th>
+            <th>最后修改时间</th>
             <th>标签</th>
             <th>操作</th>
         </tr>
@@ -57,9 +56,11 @@
             </li>
         </ul>
     </nav>
-</div>
 
-<script src="/js/jquery.min.js"></script>
+
+{% endblock %}
+
+{% block script %}
 <script>
     $("body").on("click", ".js-item-del", function () {
         var $this = $(this);

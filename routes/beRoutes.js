@@ -13,6 +13,7 @@ module.exports = function (route) {
     route.get("/login/posts", Auth(), Blog.manage);
     route.get("/login/post/new", Auth(), Blog.addNew);
     route.get("/login/edit/:postId", Auth(), Blog.edit);
+    route.post("/login/edit/:postId", Auth(), Blog.saveEdit);
     route.post("/login/post", Auth(), Blog.save);
     // т╓ююндуб
     route.get("/preview/post/:postId", Auth(), Blog.detail);
